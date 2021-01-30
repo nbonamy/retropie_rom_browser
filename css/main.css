@@ -1,0 +1,113 @@
+
+html {
+  --page-horiz-margin: 64px;
+  --header-height: 96px;
+  --card-width: 128px;
+  --card-margin: 8px;
+  --card-border-style: solid;
+  --card-border-width: 1px;
+  --card-border-radius: 6px;
+  --card-border-color: #ccc;
+  --card-border: var(--card-border-width) var(--card-border-style) var(--card-border-color)
+}
+
+* {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+}
+
+header {
+  height: var(--header-height);
+  background-color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-left: var(--page-horiz-margin);
+  z-index: 2;
+}
+
+header img {
+  position: relative;
+  height: 32px;
+  top: 4px;
+}
+
+section.main {
+  margin: var(--header-height) var(--page-horiz-margin);
+  margin-bottom: 32px;
+}
+
+
+.hidden {
+  display: none;
+}
+
+div.visible {
+  display: block;
+}
+
+div.game {
+  float: left;
+  overflow-y: clip;
+  position: relative;
+  width: var(--card-width);
+  border: var(--card-border);
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+  border-radius: var(--card-border-radius);
+  margin: var(--card-margin);
+}
+
+div.game img {
+  width: 100%;
+  aspect-ratio: 1.0;
+  object-fit: cover;
+  border-top-left-radius: var(--card-border-radius);
+  border-top-right-radius: var(--card-border-radius);
+  border-bottom: var(--card-border);
+}
+
+div.game div.content {
+  height: 48px;
+  margin: calc(var(--card-margin)*2) var(--card-margin);
+  overflow: hidden;
+  text-align: center;
+}
+
+div.game span {
+  font-size: 10.5pt;
+}
+
+div.game .action {
+  border: var(--card-border);
+  background-color: white;
+  padding-left: calc(var(--card-margin)/2);
+  padding-right: calc(var(--card-margin)/2);
+  border-bottom: 0px;
+  position: absolute;
+  color: var(--card-border-color);
+  cursor: pointer;
+  font-size: 14pt;
+  bottom: 0;
+}
+
+div.game .action.left {
+  border-top-right-radius: var(--card-border-radius);
+  border-bottom-left-radius: var(--card-border-radius);
+  border-left: 0px;
+  left: 0;
+}
+
+div.game .action.right {
+  border-top-left-radius: var(--card-border-radius);
+  border-bottom-right-radius: var(--card-border-radius);
+  border-right: 0px;
+  right: 0;
+}
+
+div.game .action.favorite.active {
+  color: red;
+}
+
+div.game .action.delete:hover {
+  color: red;
+}
