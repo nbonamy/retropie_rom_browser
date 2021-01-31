@@ -12,16 +12,17 @@ function read_gamelist($system) {
 
     // read
     foreach (file($gamelist) as $line) {
+
       if (contains($line, '</game>')) {
         if ($path != NULL) {
           $games[$path] = array(
             'path' => $path,
-            'name' => $name ? $name : $path,
+            'name' => $name ?? $path,
             'favorite' => $favorite,
           );
         }
         $path = NULL;
-        $name = '';
+        $name = NULL;
         $favorite = FALSE;
       }
 
