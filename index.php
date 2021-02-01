@@ -63,7 +63,6 @@ END;
 
       // split
       $path_parts = pathinfo($fileinfo->getPathname());
-      $cover = $path_parts['filename'];
 
       // check ext
       $extension = $path_parts['extension'];
@@ -72,9 +71,10 @@ END;
       }
 
       // find cover
-      $cover = NULL;
       if (isset($metadata[$filename]['image'])) {
         $cover = basename($metadata[$filename]['image']);
+      } else {
+        $cover = $path_parts['filename'];
       }
 
       // fallback
