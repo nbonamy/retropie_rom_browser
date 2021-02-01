@@ -72,13 +72,14 @@ END;
       }
 
       // find cover
+      $cover = NULL;
       if (isset($metadata[$filename]['image'])) {
         $cover = basename($metadata[$filename]['image']);
-        $image = "covers/$system/$cover";
       }
 
       // fallback
-      if (!file_exists($image)) {
+      $image = "covers/$system/$cover";
+      if ($cover === NULL || !file_exists($image)) {
         //$image = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/CD_icon_test.svg/1920px-CD_icon_test.svg.png";
         $image = "https://cdn4.iconfinder.com/data/icons/disk-drives-1/512/Switch_Cartridge-01-512.png";
       }
