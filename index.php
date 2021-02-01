@@ -71,11 +71,8 @@ END;
       }
 
       // find cover
-      if (file_exists(BASE_IMAGE."$system/$cover-image.jpg")) {
-        $cover = "$cover-image.jpg";
-        $image = "covers/$system/$cover";
-      } else if (file_exists(BASE_IMAGE."$system/$cover-image.png")) {
-        $cover = "$cover-image.png";
+      if (isset($metadata[$filename]['image'])) {
+        $cover = basename($metadata[$filename]['image']);
         $image = "covers/$system/$cover";
       } else {
         //$image = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/CD_icon_test.svg/1920px-CD_icon_test.svg.png";
