@@ -4,8 +4,29 @@
 define('BASE_ROM', '/home/pi/RetroPie/roms/');
 define('BASE_IMAGE', '/home/pi/.emulationstation/downloaded_images/');
 define('BASE_GAMELIST', '/home/pi/.emulationstation/gamelists/');
+
+// ignored stuff
 define('IGNORED_FILENAMES', array('tos.img'));
 define('IGNORED_EXTS', array('srm', 'bin', 'jpg', 'conf'));
+
+// geographies
+define('GEOGRAPHIES', array(
+  'World' => 80,
+  'Euro' => 60,
+  'Europe' => 60,
+  'France' => 60,
+  'US' => 40,
+  'USA' => 40,
+  'UK' => 20,
+  'Germany' => -10,
+  'Spanish' => -10,
+  'Hispanic' => -10,
+  'Brazil' => -10,
+  'Japan' => -20,
+  'China' => -40,
+  'Korea' => -40,
+  'Asia' => -40,
+));
 
 // global
 $system = @$_GET['system'];
@@ -28,6 +49,10 @@ function starts_with($haystack, $needle) {
   return stripos($haystack, $needle) === 0;
 }
 
+function is_abs_path($path) {
+  return starts_with($path, '/') || starts_with($path, '~');
+}
+
 function trim_xml($text, $tag) {
   $text = str_replace("<$tag>", '', $text);
   $text = str_replace("</$tag>", '', $text);
@@ -40,4 +65,45 @@ function json_response($status, $content) {
   header('Content-Type: application/json');
   echo json_encode($content);
   exit();
+}
+
+function open_page($system) {
+
+  $title = 'ROMS' . ($system != NULL ? ' - '.strtoupper($system) : '');
+
+echo <<<END
+<html>
+
+  <head>
+    <title>$title</title>
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+
+  <body>
+    
+    <header>
+      <h1>
+        <a href="index.php"><img src="http://emulation.gametechwiki.com/images/thumb/3/3c/EmulationStation.png/120px-EmulationStation.png"/></a>
+        $title
+      </h1>
+    </header>
+
+    <section class="main">
+END;
+
+}
+
+function close_page($system) {
+
+  echo <<<END
+  </section>
+
+  <script>g_system = '$system';</script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"> </script>
+  <script src="js/main.js"></script>
+
+  </body>
+</html>
+END;
+
 }

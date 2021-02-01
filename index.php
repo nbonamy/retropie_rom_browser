@@ -5,27 +5,8 @@
 require_once('romsite.php');
 require_once('gamelist.php');
 
-?>
-
-<html>
-
-  <head>
-    <title>ROMS<?php echo $system != NULL ? " - ".strtoupper($system) : "" ?></title>
-    <link rel="stylesheet" href="css/main.css" />
-  </head>
-
-  <body>
-    
-    <header>
-      <h1>
-        <a href="index.php"><img src="http://emulation.gametechwiki.com/images/thumb/3/3c/EmulationStation.png/120px-EmulationStation.png"/></a>
-        <?php echo $system != NULL ? strtoupper($system) : "ROMS" ?>
-      </h1>
-    </header>
-
-    <section class="main">
-
-<?php
+// open page
+open_page($system);
 
 if (!file_exists('covers')) {
 
@@ -45,7 +26,7 @@ END;
 }
 
 
-if (!$_GET['system']) {
+if ($system === NULL) {
 
   // get systems
   $systems = array();
@@ -67,6 +48,13 @@ if (!$_GET['system']) {
   echo "</ul>";
 
 } else {
+
+  // toolbar
+  echo <<<END
+    <ul class="toolbar">
+      <li><a href="dedup.php?system=$system">Remove duplicates</a></li>
+    </ul>
+END;
 
   // favorites
   $metadata = read_gamelist($system);
@@ -154,13 +142,5 @@ END;
   
 }
 
-?>
-
-  </section>
-
-  <script>g_system = '<?php echo $system; ?>';</script>
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"> </script>
-  <script src="js/main.js"></script>
-
-  </body>
-</html>
+// done
+close_page($system);

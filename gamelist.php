@@ -3,11 +3,16 @@
 // base
 require_once('romsite.php');
 
+function get_gamelist_filename($system) {
+  return BASE_GAMELIST."$system/gamelist.xml";
+}
+
 function read_gamelist($system) {
 
   // favorites
   $games = array();
-  $gamelist = BASE_GAMELIST."$system/gamelist.xml";
+  $favorite = FALSE;
+  $gamelist = get_gamelist_filename($system);
   if (file_exists($gamelist) === TRUE) {
 
     // read
@@ -17,12 +22,14 @@ function read_gamelist($system) {
         if ($path != NULL) {
           $games[$path] = array(
             'path' => $path,
+            'image' => $image,
             'name' => $name ?? $path,
             'favorite' => $favorite,
           );
         }
         $path = NULL;
         $name = NULL;
+        $image = NULL;
         $favorite = FALSE;
       }
 
@@ -35,6 +42,11 @@ function read_gamelist($system) {
       // name
       if (contains($line, '<name>')) {
         $name = trim_xml($line, 'name');
+      }
+
+      // image
+      if (contains($line, '<image>')) {
+        $image = trim_xml($line, 'image');
       }
 
       // favorite
@@ -56,6 +68,11 @@ function remove_game_from_gamelist($system, $title) {
   $gamelist = BASE_GAMELIST."$system/gamelist.xml";
   if (file_exists($gamelist) === FALSE) {
     return FALSE;
+  }
+
+  // if single title then make it a list
+  if (!is_array($title)) {
+    $title = array($title);
   }
 
   // read file
@@ -86,7 +103,12 @@ function remove_game_from_gamelist($system, $title) {
 
       // check path for ignore
       if (contains($line, '<path>')) {
-        $ignore = contains($line, $title);
+        foreach ($title as $t) {
+          if (contains($line, $t)) {
+            $ignore = TRUE;
+            break;
+          }
+        }
       }
 
     }
