@@ -7,7 +7,7 @@ define('BASE_GAMELIST', '/home/pi/.emulationstation/gamelists/');
 
 // ignored stuff
 define('IGNORED_FILENAMES', array('tos.img'));
-define('IGNORED_EXTS', array('srm', 'bin', 'jpg', 'conf'));
+define('IGNORED_EXTS', array('txt', 'srm', 'bin', 'jpg', 'png', 'conf', 'xml', 'sqlite'));
 
 // geographies
 define('GEOGRAPHIES', array(
