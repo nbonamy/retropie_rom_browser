@@ -74,7 +74,8 @@ END;
       if (isset($metadata[$filename]['image'])) {
         $cover = basename($metadata[$filename]['image']);
       } else {
-        $cover = $path_parts['filename'];
+        // default to jpg
+        $cover = $path_parts['filename'].'.jpg';
       }
 
       // fallback
