@@ -9,52 +9,54 @@ function get_gamelist_filename($system) {
 
 function read_gamelist($system) {
 
+  // open gamelist
+  $gamelist = get_gamelist_filename($system);
+  if (file_exists($gamelist) === FALSE) {
+    return FALSE;
+  }
+
   // favorites
   $games = array();
   $favorite = FALSE;
-  $gamelist = get_gamelist_filename($system);
-  if (file_exists($gamelist) === TRUE) {
 
-    // read
-    foreach (file($gamelist) as $line) {
+  // read
+  foreach (file($gamelist) as $line) {
 
-      if (contains($line, '</game>')) {
-        if ($path != NULL) {
-          $games[$path] = array(
-            'path' => $path,
-            'image' => $image,
-            'name' => $name ?? $path,
-            'favorite' => $favorite,
-          );
-        }
-        $path = NULL;
-        $name = NULL;
-        $image = NULL;
-        $favorite = FALSE;
+    if (contains($line, '</game>')) {
+      if ($path != NULL) {
+        $games[$path] = array(
+          'path' => $path,
+          'image' => $image,
+          'name' => $name ?? $path,
+          'favorite' => $favorite,
+        );
       }
-
-      // path
-      if (contains($line, '<path>')) {
-        $line = trim_xml($line, 'path');
-        $path = basename($line);
-      }
-
-      // name
-      if (contains($line, '<name>')) {
-        $name = trim_xml($line, 'name');
-      }
-
-      // image
-      if (contains($line, '<image>')) {
-        $image = trim_xml($line, 'image');
-      }
-
-      // favorite
-      if (contains($line, '<favorite>')) {
-        $favorite = TRUE;
-      }
+      $path = NULL;
+      $name = NULL;
+      $image = NULL;
+      $favorite = FALSE;
     }
-  
+
+    // path
+    if (contains($line, '<path>')) {
+      $line = trim_xml($line, 'path');
+      $path = basename($line);
+    }
+
+    // name
+    if (contains($line, '<name>')) {
+      $name = trim_xml($line, 'name');
+    }
+
+    // image
+    if (contains($line, '<image>')) {
+      $image = trim_xml($line, 'image');
+    }
+
+    // favorite
+    if (contains($line, '<favorite>')) {
+      $favorite = TRUE;
+    }
   }
 
   // done
@@ -65,7 +67,7 @@ function read_gamelist($system) {
 function remove_game_from_gamelist($system, $title) {
 
   // open gamelist
-  $gamelist = BASE_GAMELIST."$system/gamelist.xml";
+  $gamelist = get_gamelist_filename($system);
   if (file_exists($gamelist) === FALSE) {
     return FALSE;
   }
