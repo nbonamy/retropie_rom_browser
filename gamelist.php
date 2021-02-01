@@ -18,6 +18,8 @@ function read_gamelist($system) {
   // favorites
   $games = array();
   $favorite = FALSE;
+  $name = NULL;
+  $image = NULL;
 
   // read
   foreach (file($gamelist) as $line) {

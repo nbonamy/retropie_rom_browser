@@ -127,7 +127,7 @@ if ($count == 0) {
 
   echo 'No duplicates found';
 
-} else if ($_GET['confirmed'] == TRUE) {
+} else if (isset($_GET['confirmed']) && $_GET['confirmed'] == TRUE) {
 
   echo '<ul>';
   $deleted = array();
@@ -155,31 +155,7 @@ if ($count == 0) {
 
 } else {
 
-  // output
-  echo <<<END
-  <table border=1>
-  <tr>
-    <th>Title</th>
-    <th>Kept ROM</th>
-    <th>Deleted ROMs</th>
-  </tr>
-  END;
-
-  // ouput
-  foreach ($games as $title => &$roms) {
-    echo "<tr><th>$title</th>";
-    echo "<td>[{$roms[0]['score']}] {$roms[0]['name']} <i>({$roms[0]['path']})</i></td>";
-    echo '<td>';
-    for ($i=1; $i<count($roms); $i++) {
-      echo "[{$roms[$i]['score']}] {$roms[$i]['name']} <i>({$roms[$i]['path']})</i><br/>";
-    }
-    echo '</td></tr>';
-  }
-
-  echo <<<END
-  </table>
-  <div><a href="dedup.php?system=$system&confirmed=1">Delete these $count ROMS</a></div>
-  END;
+  render_view('dedup', array('games' => $games));
 
 }
 
