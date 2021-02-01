@@ -3,16 +3,14 @@
 
 // base
 require_once('romsite.php');
+require_once('gamelist.php');
 
 // open gamelist
-$gamelist = BASE_GAMELIST."$system/gamelist.xml";
+$gamelist = get_gamelist_filename($system);
 if (file_exists($gamelist) === FALSE) {
-
-  // response
   json_response(404, array(
     'error' => 'Gamelist not found',
   ));
-
 }
 
 // read file and add favorite line

@@ -67,6 +67,10 @@ function read_gamelist($system) {
 }
 
 function remove_game_from_gamelist($system, $title) {
+  return remove_games_from_gamelist($system, $title);
+}
+
+function remove_games_from_gamelist($system, $titles) {
 
   // open gamelist
   $gamelist = get_gamelist_filename($system);
@@ -75,8 +79,8 @@ function remove_game_from_gamelist($system, $title) {
   }
 
   // if single title then make it a list
-  if (!is_array($title)) {
-    $title = array($title);
+  if (!is_array($titles)) {
+    $titles = array($titles);
   }
 
   // read file
@@ -107,7 +111,7 @@ function remove_game_from_gamelist($system, $title) {
 
       // check path for ignore
       if (contains($line, '<path>')) {
-        foreach ($title as $t) {
+        foreach ($titles as $t) {
           if (contains($line, $t)) {
             $ignore = TRUE;
             break;

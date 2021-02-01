@@ -2,8 +2,8 @@
 
 // base
 require_once('romsite.php');
+require_once('library.php');
 require_once('gamelist.php');
-require_once('delete.php');
 
 // this can take some time
 set_time_limit(0);
@@ -135,8 +135,8 @@ if ($count == 0) {
     for ($i=1; $i<count($roms); $i++) {
 
       // delete without updating gamelist
-      if (!file_exists($roms[$i]['path'])) {
-        echo "<li>File does not exist for \"{$roms[$i]['path']}\" ({$roms[$i]['path']})</li>";
+      if (!file_exists(get_rom_fullpath($system, $roms[$i]['path']))) {
+        echo "<li>File does not exist for \"{$roms[$i]['path']}\" ({$roms[$i]['name']})</li>";
         $deleted[] = basename($roms[$i]['path']);
       } else if (delete_game($system, $roms[$i]['path'], $roms[$i]['image'], FALSE)) {
         echo "<li>Deleted \"{$roms[$i]['path']}\" ({$roms[$i]['path']})</li>";
@@ -150,12 +150,16 @@ if ($count == 0) {
 
   // update gamelist
   if (count($deleted) > 0) {
-    remove_game_from_gamelist($system, $deleted);
+    remove_games_from_gamelist($system, $deleted);
   }
 
 } else {
 
-  render_view('dedup', array('games' => $games));
+  render_view('dedup', array(
+    'system' => $system,
+    'games' => $games,
+    'count' => $count,
+  ));
 
 }
 
