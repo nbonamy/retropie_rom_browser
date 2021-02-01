@@ -8,24 +8,13 @@ require_once('gamelist.php');
 // open page
 open_page($system);
 
+// setup
 if (!file_exists('covers')) {
-
-  echo <<<END
-
-    <div>In order to use the ROMS gallery some commands need to be run:</div>
-    <ul>
-      <li>ln -s \$HOME/.emulationstation/downloaded_images ${!${''} = __DIR__}/covers</li>
-      <li>find \$HOME/.emulationstation/gamelists -name gamelist.xml -exec chmod o+w {} \;
-    </ul>
-    <div>Reload the page once done.</div>
-    
-END;
-
+  render_view('setup', array('path' => __DIR__));
   exit();
-
 }
 
-
+// system or not
 if ($system === NULL) {
 
   // get systems
@@ -118,26 +107,13 @@ END;
 
   // echo
   foreach ($games as $game) {
-
-    // get data
-    $filename = $game['filename'];
-    $favorite = $game['favorite'];
-    $title = $game['title'];
-    $image = $game['image'];
-    $cover = $game['cover'];
-
-    // output
-    echo <<<END
-    <div class="game" data-name="$filename" data-image="$cover">
-      <div class="action right delete">×</div>
-      <div class="action left favorite ${!${''} = ($favorite ? 'active' : '') }">${!${''} = ($favorite ? '♥️' : '♡') }</div>
-      <img src="$image" title="$filename">
-      <div class="content">
-        <span>$title</span>
-      </div>
-    </div>
-END;
-
+    render_view('game', array(
+      'title' => $game['title'],
+      'filename' => $game['filename'],
+      'favorite' => $game['favorite'],
+      'image' => $game['image'],
+      'cover' => $game['cover']
+    ));
   }
   
 }

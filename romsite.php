@@ -67,43 +67,19 @@ function json_response($status, $content) {
   exit();
 }
 
+function render_view($view, $data) {
+  extract($data);
+  require('views/' . $view . '.php');
+}
+
 function open_page($system) {
-
-  $title = 'ROMS' . ($system != NULL ? ' - '.strtoupper($system) : '');
-
-echo <<<END
-<html>
-
-  <head>
-    <title>$title</title>
-    <link rel="stylesheet" href="css/main.css" />
-  </head>
-
-  <body>
-    
-    <header>
-      <h1>
-        <a href="index.php"><img src="http://emulation.gametechwiki.com/images/thumb/3/3c/EmulationStation.png/120px-EmulationStation.png"/></a>
-        $title
-      </h1>
-    </header>
-
-    <section class="main">
-END;
-
+  render_view('header', array(
+    'title' => 'ROMS' . ($system != NULL ? ' - '.strtoupper($system) : '')
+  ));
 }
 
 function close_page($system) {
-
-  echo <<<END
-  </section>
-
-  <script>g_system = '$system';</script>
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"> </script>
-  <script src="js/main.js"></script>
-
-  </body>
-</html>
-END;
-
+  render_view('footer', array(
+    'system' => $system
+  ));
 }
