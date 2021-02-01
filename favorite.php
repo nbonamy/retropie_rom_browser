@@ -7,13 +7,19 @@ require_once('gamelist.php');
 
 // open gamelist
 $gamelist = get_gamelist_filename($system);
-if (file_exists($gamelist) === FALSE) {
+if (!file_exists($gamelist)) {
   json_response(404, array(
     'error' => 'Gamelist not found',
   ));
 }
+if (!is_writable($gamelist)) {
+  json_response(403, array(
+    'error' => 'Gamelist not writeable',
+  ));
+}
 
 // read file and add favorite line
+$found = FALSE;
 $ingame = FALSE;
 $unfaved = FALSE;
 $lines = array();
@@ -22,6 +28,7 @@ foreach (file($gamelist) as $line) {
   if ($ingame === FALSE) {
 
     if (contains($line, '<path>') && contains($line, htmlentities($_GET['filename']))) {
+      $found = TRUE;
       $ingame = TRUE;
     }
 
@@ -44,6 +51,13 @@ foreach (file($gamelist) as $line) {
     $lines[] = $line;
   }
 
+}
+
+// found?
+if ($found !== TRUE) {
+  json_response(404, array(
+    'error' => 'ROM not found in gamelist.xml'
+  ));
 }
 
 // write

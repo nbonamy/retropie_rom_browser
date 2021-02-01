@@ -36,7 +36,7 @@ $(document).ready(function() {
         else self.text('♡').removeClass('active');
       },
       error: function(err) {
-        alert('Error while favoriting ROM')
+        alert(err.responseJSON.error);
       }
     });
 
