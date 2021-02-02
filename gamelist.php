@@ -67,7 +67,7 @@ function read_gamelist($system) {
 }
 
 function remove_game_from_gamelist($system, $title) {
-  return remove_games_from_gamelist($system, $title);
+  return remove_games_from_gamelist($system, array($title));
 }
 
 function remove_games_from_gamelist($system, $titles) {
