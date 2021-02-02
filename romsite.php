@@ -78,8 +78,6 @@ function open_page($system) {
   ));
 }
 
-function close_page($system) {
-  render_view('footer', array(
-    'system' => $system
-  ));
+function close_page() {
+  render_view('footer', array());
 }

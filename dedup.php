@@ -63,4 +63,4 @@ if ($count == 0) {
 echo "<div><a href=\"index.php?system=$system\">Back</a></div>";
 
 // done
-close_page($system);
+close_page();

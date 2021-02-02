@@ -39,4 +39,4 @@ if ($system === NULL) {
 }
 
 // done
-close_page($system);
+close_page();

@@ -6,6 +6,7 @@
 <?php
   foreach ($games as $game) {
     render_view('game', array(
+      'system' => $game['system'],
       'title' => $game['title'],
       'filename' => $game['filename'],
       'favorite' => $game['favorite'],

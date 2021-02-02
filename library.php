@@ -81,6 +81,7 @@ function list_games($system) {
       }
 
       $games[] = array(
+        'system' => $system,
         'filename' => $filename,
         'title' => $gamename,
         'favorite' => $favorite,

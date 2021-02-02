@@ -9,7 +9,7 @@ $(document).ready(function() {
     // delete
     if (confirm('Are you sure you want to delete this game?')) {
       $.ajax({
-        url: 'delete.php?system=' + g_system + '&filename=' + encodeURIComponent(game.data('name')) + '&image=' + encodeURIComponent(game.data('image')),
+        url: 'delete.php?system=' + encodeURIComponent(game.data('system')) + '&filename=' + encodeURIComponent(game.data('name')) + '&image=' + encodeURIComponent(game.data('image')),
         success: function(data) {
           game.remove();
         },
@@ -30,7 +30,7 @@ $(document).ready(function() {
     // favorite
     $.ajax({
       dataType: 'json',
-      url: 'favorite.php?system=' + g_system + '&filename=' + encodeURIComponent(game.data('name')),
+      url: 'favorite.php?system=' + encodeURIComponent(game.data('system')) + '&filename=' + encodeURIComponent(game.data('name')),
       success: function(data) {
         if (data.favorite) self.text('♥️').addClass('active');
         else self.text('♡').removeClass('active');
