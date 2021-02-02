@@ -12,6 +12,94 @@ function get_rom_fullpath($system, $filename) {
   }
 }
 
+function list_systems() {
+
+  // get systems
+  $systems = array();
+  $dir = new DirectoryIterator(BASE_IMAGE);
+  foreach ($dir as $fileinfo) {
+    if (!$fileinfo->isDot()) {
+      $systems[] = $fileinfo->getFilename();
+    }
+  }
+
+  // sort
+  sort($systems);
+
+  // done
+  return $systems;
+
+}
+
+function list_games($system) {
+
+  // favorites
+  $metadata = read_gamelist($system);
+
+  // get games
+  $games = array();
+  $dir = new DirectoryIterator(BASE_ROM."$system");
+  foreach ($dir as $fileinfo) {
+    if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
+
+      // skip other dots
+      $filename = $fileinfo->getFilename();
+      if (starts_with($filename, '.') || in_array($filename, IGNORED_FILENAMES)) {
+        continue;
+      }
+
+      // split
+      $path_parts = pathinfo($fileinfo->getPathname());
+
+      // check ext
+      $extension = $path_parts['extension'];
+      if (starts_with($extension, 'state') || in_array($extension, IGNORED_EXTS)) {
+        continue;
+      }
+
+      // find cover
+      if (isset($metadata[$filename]['image'])) {
+        $cover = basename($metadata[$filename]['image']);
+      } else {
+        // default to jpg
+        $cover = $path_parts['filename'].'.jpg';
+      }
+
+      // fallback
+      $image = "covers/$system/$cover";
+      if ($cover === NULL || !file_exists($image)) {
+        //$image = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/CD_icon_test.svg/1920px-CD_icon_test.svg.png";
+        $image = "https://cdn4.iconfinder.com/data/icons/disk-drives-1/512/Switch_Cartridge-01-512.png";
+      }
+
+      // done
+      $gamename = $filename;
+      $favorite = FALSE;
+      if (isset($metadata[$filename])) {
+        $gamename = $metadata[$filename]['name'];
+        $favorite = $metadata[$filename]['favorite'];
+      }
+
+      $games[] = array(
+        'filename' => $filename,
+        'title' => $gamename,
+        'favorite' => $favorite,
+        'cover' => $cover,
+        'image' => $image
+      );
+    }
+  }
+
+  // sort
+  usort($games, function($a, $b) {
+    return strcasecmp($a['title'], $b['title']);
+  });
+
+  // done
+  return $games;
+
+}
+
 function delete_game($system, $filename, $image, $update_gamelist = TRUE) {
 
   // rom filename
@@ -40,5 +128,119 @@ function delete_game($system, $filename, $image, $update_gamelist = TRUE) {
 
   // too bad
   return FALSE;
+
+}
+
+function find_duplicates($system) {
+
+  // init
+  $games = array();
+  $gamelist = read_gamelist($system);
+
+  // extract title
+  foreach ($gamelist as $rom => $game) {
+    
+    // 1st get title
+    $title = $game['name'];
+    $title = preg_replace('/\([^\)]*\)/', '', $title);
+    $title = trim($title);
+
+    // init score
+    $name = $game['name'];
+    $game['score'] = 0;
+
+    // beta
+    if (preg_match('/\([^\)]*beta[^\)]*\)/i', $game['path'])) {
+      $game['score'] -= 20;
+    }
+
+    // bootleg
+    if (preg_match('/\([^\)]*bootleg[^\)]*\)/i', $name)) {
+      $game['score'] -= 10;
+    }
+
+    // cocktail
+    if (preg_match('/\([^\)]*cocktail[^\)]*\)/i', $name)) {
+      $game['score'] -= 5;
+    }
+
+    // protected
+    if (contains($name, 'protected') && !contains($name, 'unprotected')) {
+      $game['score'] -= 500;
+    }
+
+    // geo
+    $geo_found = FALSE;
+    foreach (GEOGRAPHIES as $country => $score) {
+      if (preg_match('/\([^\)]*' . $country . '[^\)]*\)/i', $name)) {
+        $game['score'] += $score;
+        $geo_found = TRUE;
+        break;
+      }
+    }
+
+    // simpler geos (n64)
+    if ($geo_found === FALSE) {
+      if (contains($game['path'], '(W)')) {
+        $game['score'] += GEOGRAPHIES['World'];
+      } else if (contains($game['path'], '(E)')) {
+        $game['score'] += GEOGRAPHIES['Europe'];
+      } else if (contains($game['path'], '(U)')) {
+        $game['score'] += GEOGRAPHIES['USA'];
+      } else if (contains($game['path'], '(J)')) {
+        $game['score'] += GEOGRAPHIES['Japan'];
+      }
+    }
+
+    // revision/set/...
+    $matches = NULL;
+    if (preg_match('/\([^\)]*(rev|rev\.|revision|set|program code)( |\.)(\w+)[^\)]*\)/i', $name, $matches)) {
+      $match = end($matches);
+      if (is_numeric($match)) {
+        $game['score'] += intval($match);
+      } else {
+        $game['score'] += ord($match)-ord('A')+1;
+      }
+    }
+
+    // version number
+    $matches = NULL;
+    if (preg_match('/\([^\)]*v(\d)\.(\d)[^\)]*\)/i', $name, $matches)) {
+      $game['score'] += intval($matches[1])*10 + intval($matches[2]);
+    }
+
+    // new?
+    if (preg_match('/\([^\)]*new version[^\)]*\)/i', $name)) {
+      $game['score'] += 1;
+    }
+
+    // done
+    $games[$title][] = $game;
+
+  }
+
+  // remove games which have only one rom
+  foreach ($games as $title => &$roms) {
+    if (count($roms) == 1) {
+      unset($games[$title]);
+    }
+  }
+
+  // now sort by score
+  foreach ($games as $title => &$roms) {
+    usort($roms, function($a, $b) {
+      if ($a['score'] == $b['score']) {
+      return strcmp($a['path'], $b['path']); 
+      } else {
+        return $a['score'] < $b['score'];
+      }
+    });
+  }
+
+  // final sort
+  ksort($games);  
+
+  // done
+  return $games;
 
 }
