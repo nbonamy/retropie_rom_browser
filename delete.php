@@ -2,8 +2,8 @@
 <?php
 
 // base
-require_once('romsite.php');
-require_once('library.php');
+require_once('includes/romsite.php');
+require_once('includes/library.php');
 
 if (delete_game($system, $_GET['filename'], $_GET['image'], TRUE)) {
 

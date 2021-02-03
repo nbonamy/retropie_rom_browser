@@ -1,9 +1,9 @@
 <?php
 
 // base
-require_once('romsite.php');
-require_once('library.php');
-require_once('gamelist.php');
+require_once('includes/romsite.php');
+require_once('includes/library.php');
+require_once('includes/gamelist.php');
 
 // this can take some time
 set_time_limit(0);

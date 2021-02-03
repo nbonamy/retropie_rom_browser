@@ -2,8 +2,8 @@
 <?php
 
 // base
-require_once('romsite.php');
-require_once('gamelist.php');
+require_once('includes/romsite.php');
+require_once('includes/gamelist.php');
 
 // open gamelist
 $gamelist = get_gamelist_filename($system);
