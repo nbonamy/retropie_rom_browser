@@ -143,37 +143,45 @@ function find_duplicates($system) {
     
     // 1st get title
     $title = $game['name'];
+
+    // remove parenthesized stuff
     $title = preg_replace('/\([^\)]*\)/', '', $title);
+    
+    // avoid word separators to interfere
+    $title = preg_replace('/[-:]/', ' ', $title);
+    
+    // final trimming
+    $title = preg_replace('/ [ ]*/', ' ', $title);
     $title = trim($title);
 
     // init score
-    $name = $game['name'];
+    $fullname = $game['name'].' '.$game['path'];
     $game['score'] = 0;
 
     // beta
-    if (preg_match('/\([^\)]*beta[^\)]*\)/i', $game['path'])) {
+    if (preg_match('/\([^\)]*beta[^\)]*\)/i', $fullname)) {
       $game['score'] -= 20;
     }
 
     // bootleg
-    if (preg_match('/\([^\)]*bootleg[^\)]*\)/i', $name)) {
+    if (preg_match('/\([^\)]*bootleg[^\)]*\)/i', $fullname)) {
       $game['score'] -= 10;
     }
 
     // cocktail
-    if (preg_match('/\([^\)]*cocktail[^\)]*\)/i', $name)) {
+    if (preg_match('/\([^\)]*cocktail[^\)]*\)/i', $fullname)) {
       $game['score'] -= 5;
     }
 
     // protected
-    if (contains($name, 'protected') && !contains($name, 'unprotected')) {
+    if (contains($fullname, 'protected') && !contains($fullname, 'unprotected')) {
       $game['score'] -= 500;
     }
 
     // geo
     $geo_found = FALSE;
     foreach (GEOGRAPHIES as $country => $score) {
-      if (preg_match('/\([^\)]*' . $country . '[^\)]*\)/i', $name)) {
+      if (preg_match('/\([^\)]*'.$country.'[^\)]*\)/i', $fullname)) {
         $game['score'] += $score;
         $geo_found = TRUE;
         break;
@@ -182,20 +190,20 @@ function find_duplicates($system) {
 
     // simpler geos (n64)
     if ($geo_found === FALSE) {
-      if (contains($game['path'], '(W)')) {
+      if (contains(fullname, '(W)')) {
         $game['score'] += GEOGRAPHIES['World'];
-      } else if (contains($game['path'], '(E)')) {
+      } else if (contains(fullname, '(E)')) {
         $game['score'] += GEOGRAPHIES['Europe'];
-      } else if (contains($game['path'], '(U)')) {
+      } else if (contains(fullname, '(U)')) {
         $game['score'] += GEOGRAPHIES['USA'];
-      } else if (contains($game['path'], '(J)')) {
+      } else if (contains(fullname, '(J)')) {
         $game['score'] += GEOGRAPHIES['Japan'];
       }
     }
 
     // revision/set/...
     $matches = NULL;
-    if (preg_match('/\([^\)]*(rev|rev\.|revision|set|program code)( |\.)(\w+)[^\)]*\)/i', $name, $matches)) {
+    if (preg_match('/\([^\)]*(rev|rev\.|revision|set|program code)( |\.)(\w+)[^\)]*\)/i', $fullname, $matches)) {
       $match = end($matches);
       if (is_numeric($match)) {
         $game['score'] += intval($match);
@@ -206,12 +214,12 @@ function find_duplicates($system) {
 
     // version number
     $matches = NULL;
-    if (preg_match('/\([^\)]*v(\d)\.(\d)[^\)]*\)/i', $name, $matches)) {
+    if (preg_match('/\([^\)]*v(\d)\.(\d)[^\)]*\)/i', $fullname, $matches)) {
       $game['score'] += intval($matches[1])*10 + intval($matches[2]);
     }
 
     // new?
-    if (preg_match('/\([^\)]*new version[^\)]*\)/i', $name)) {
+    if (preg_match('/\([^\)]*new version[^\)]*\)/i', $fullname)) {
       $game['score'] += 1;
     }
 
