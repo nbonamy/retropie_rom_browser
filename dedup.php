@@ -52,7 +52,6 @@ if ($count == 0) {
 } else {
 
   render_view('dedup', array(
-    'system' => $system,
     'games' => $games,
     'count' => $count,
   ));
@@ -60,7 +59,7 @@ if ($count == 0) {
 }
 
 // back
-echo "<div><a href=\"index.php?system=$system\">Back</a></div>";
+echo '<div><a href="index.php?system='.$system.'">Back</a></div>';
 
 // done
 close_page();

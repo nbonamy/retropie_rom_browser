@@ -69,6 +69,7 @@ function json_response($status, $content) {
 
 function render_view($view, $data) {
   extract($data);
+  global $system;
   require('views/' . $view . '.php');
 }
 
