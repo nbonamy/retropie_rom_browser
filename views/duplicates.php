@@ -19,4 +19,4 @@
   <?php endforeach; ?>
 
 </table>
-<div><a href="dedup.php?system=<?= $system ?>&confirmed=1">Delete these <?= $count ?> ROMS</a></div>
+<div><a href="duplicates.php?system=<?= $system ?>&confirmed=1">Delete these <?= $count ?> ROMS</a></div>
