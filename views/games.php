@@ -1,6 +1,6 @@
 
 <ul class="toolbar">
-  <li><a href="dedup.php?system=<?= $system ?>">Remove duplicates</a></li>
+  <li><a href="duplicates.php?system=<?= $system ?>">Remove duplicates</a></li>
 </ul>
 
 <?php

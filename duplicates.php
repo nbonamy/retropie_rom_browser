@@ -51,7 +51,7 @@ if ($count == 0) {
 
 } else {
 
-  render_view('dedup', array(
+  render_view('duplicates', array(
     'games' => $games,
     'count' => $count,
   ));
