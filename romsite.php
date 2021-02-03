@@ -12,11 +12,11 @@ define('IGNORED_EXTS', array('txt', 'srm', 'bin', 'jpg', 'png', 'conf', 'xml', '
 // geographies
 define('GEOGRAPHIES', array(
   'World' => 80,
-  'Euro' => 60,
   'Europe' => 60,
+  'Euro' => 60,
   'France' => 60,
-  'US' => 40,
   'USA' => 40,
+  'US' => 40,
   'UK' => 20,
   'Germany' => -10,
   'Spanish' => -10,
