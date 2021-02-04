@@ -12,14 +12,44 @@ function get_rom_fullpath($system, $filename) {
   }
 }
 
+function is_valid_rom($filename) {
+
+  // skip other dots
+  $filename = basename($filename);
+  if (starts_with($filename, '.') || in_array($filename, IGNORED_FILENAMES)) {
+    return FALSE;
+  }
+
+  // split
+  $path_parts = pathinfo($filename);
+
+  // check ext
+  $extension = $path_parts['extension'];
+  if (starts_with($extension, 'state') || in_array($extension, IGNORED_EXTS)) {
+    return FALSE;
+  }
+
+  // seems ok
+  return TRUE;
+  
+}
+
 function list_systems() {
 
   // get systems
   $systems = array();
-  $dir = new DirectoryIterator(BASE_IMAGE);
-  foreach ($dir as $fileinfo) {
-    if (!$fileinfo->isDot()) {
-      $systems[] = $fileinfo->getFilename();
+  $dir = new DirectoryIterator(BASE_ROM);
+  foreach ($dir as $dirinfo) {
+    if (!$dirinfo->isDot() && $dirinfo->isDir()) {
+      $dir2 = new DirectoryIterator(BASE_ROM.$dirinfo->getFilename());
+      foreach ($dir2 as $fileinfo) {
+        if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
+          if (is_valid_rom($fileinfo->getFilename())) {
+            $systems[] = $dirinfo->getFilename();
+            break;
+          }
+        }
+      }
     }
   }
 
@@ -38,24 +68,18 @@ function list_games($system) {
 
   // get games
   $games = array();
-  $dir = new DirectoryIterator(BASE_ROM."$system");
+  $dir = new DirectoryIterator(BASE_ROM.$system);
   foreach ($dir as $fileinfo) {
     if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
 
-      // skip other dots
+      // skip non valid roms
       $filename = $fileinfo->getFilename();
-      if (starts_with($filename, '.') || in_array($filename, IGNORED_FILENAMES)) {
+      if (is_valid_rom($filename) == FALSE) {
         continue;
       }
 
       // split
       $path_parts = pathinfo($fileinfo->getPathname());
-
-      // check ext
-      $extension = $path_parts['extension'];
-      if (starts_with($extension, 'state') || in_array($extension, IGNORED_EXTS)) {
-        continue;
-      }
 
       // find cover
       if (isset($metadata[$filename]['image'])) {
