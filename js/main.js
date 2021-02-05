@@ -1,5 +1,14 @@
 $(document).ready(function() {
 
+  $('#search').on('click', function() {
+
+    var search = prompt('Enter text to search for');
+    if (search != null && search.length > 0) {
+      document.location = 'search.php?q=' + search;
+    }
+  
+  });
+
   $('.game .delete').on('click', function() {
 
     // save

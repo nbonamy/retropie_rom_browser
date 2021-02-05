@@ -1,6 +1,7 @@
 # Retropie Rom Browser
 
 A simple PHP based webapp allowing to browse your installed ROMS and:
+- Search roms
 - Delete roms
 - Add or remove roms from your favorite
 - Remove duplicates from your roms collection

@@ -3,7 +3,7 @@
 
 <?php
   foreach ($games as $game) {
-    render_view('game', array(
+    render_view('_game', array(
       'system' => $game['system'],
       'title' => $game['title'],
       'filename' => $game['filename'],

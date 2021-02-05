@@ -5,17 +5,6 @@
   <li><a href="duplicates.php?system=<?= $system ?>">Remove duplicates</a></li>
 </ul>
 
-<?php
-  foreach ($games as $game) {
-    render_view('game', array(
-      'system' => $game['system'],
-      'title' => $game['title'],
-      'filename' => $game['filename'],
-      'favorite' => $game['favorite'],
-      'image' => $game['image'],
-      'cover' => $game['cover']
-    ));
-  }
-?>
+<?php render_view('_gamelist', array('games' => $games)); ?>
 
 <?php require_once('footer.php') ?>
