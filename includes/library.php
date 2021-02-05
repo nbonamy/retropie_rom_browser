@@ -214,13 +214,13 @@ function find_duplicates($system) {
 
     // simpler geos (n64)
     if ($geo_found === FALSE) {
-      if (contains(fullname, '(W)')) {
+      if (contains($fullname, '(W)')) {
         $game['score'] += GEOGRAPHIES['World'];
-      } else if (contains(fullname, '(E)')) {
+      } else if (contains($fullname, '(E)')) {
         $game['score'] += GEOGRAPHIES['Europe'];
-      } else if (contains(fullname, '(U)')) {
+      } else if (contains($fullname, '(U)')) {
         $game['score'] += GEOGRAPHIES['USA'];
-      } else if (contains(fullname, '(J)')) {
+      } else if (contains($fullname, '(J)')) {
         $game['score'] += GEOGRAPHIES['Japan'];
       }
     }
