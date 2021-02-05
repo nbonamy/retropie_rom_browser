@@ -5,9 +5,6 @@ require_once('includes/romsite.php');
 require_once('includes/library.php');
 require_once('includes/gamelist.php');
 
-// open page
-open_page($system);
-
 // setup
 if (!file_exists('covers')) {
   render_view('setup', array('path' => __DIR__));
@@ -22,6 +19,7 @@ if ($system === NULL) {
 
   // echo
   render_view('systems', array(
+    'title' => 'RetroPie ROM Browser',
     'systems' => $systems
   ));
 
@@ -32,10 +30,8 @@ if ($system === NULL) {
 
   // render
   render_view('games', array(
+    'title' => strtoupper("ROMS - $system"),
     'games' => $games
   ));
   
 }
-
-// done
-close_page();

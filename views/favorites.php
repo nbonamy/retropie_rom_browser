@@ -1,10 +1,6 @@
 
 <?php require_once('header.php') ?>
 
-<ul class="toolbar">
-  <li><a href="duplicates.php?system=<?= $system ?>">Remove duplicates</a></li>
-</ul>
-
 <?php
   foreach ($games as $game) {
     render_view('game', array(

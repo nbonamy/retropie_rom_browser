@@ -18,48 +18,51 @@ foreach ($games as $title => &$roms) {
 }
 
 // output
-open_page($system);
 if ($count == 0) {
 
-  echo 'No duplicates found';
+  render_page('duplicates', array(
+    'title' => 'Duplicates',
+    'content' => '<div>No duplicates found</div>'
+  ));
 
 } else if (isset($_GET['confirmed']) && $_GET['confirmed'] == TRUE) {
 
-  echo '<ul>';
+  $content = '<ul>';
   $deleted = array();
   foreach ($games as $title => &$roms) {
     for ($i=1; $i<count($roms); $i++) {
 
       // delete without updating gamelist
       if (!file_exists(get_rom_fullpath($system, $roms[$i]['path']))) {
-        echo "<li>File does not exist for \"{$roms[$i]['path']}\" ({$roms[$i]['name']})</li>";
+        $content .= "<li>File does not exist for \"{$roms[$i]['path']}\" ({$roms[$i]['name']})</li>";
         $deleted[] = basename($roms[$i]['path']);
       } else if (delete_game($system, $roms[$i]['path'], $roms[$i]['image'], FALSE)) {
-        echo "<li>Deleted \"{$roms[$i]['path']}\" ({$roms[$i]['path']})</li>";
+        $content .= "<li>Deleted \"{$roms[$i]['path']}\" ({$roms[$i]['path']})</li>";
         $deleted[] = basename($roms[$i]['path']);
       } else {
-        echo "<li>Error while deleting \"{$roms[$i]['path']}\" ({$roms[$i]['path']})</li>";
+        $content .= "<li>Error while deleting \"{$roms[$i]['path']}\" ({$roms[$i]['path']})</li>";
       }
     }
   }
-  echo '</ul>';
+  $content .= '</ul>';
 
   // update gamelist
   if (count($deleted) > 0) {
     remove_games_from_gamelist($system, $deleted);
   }
 
+  // output
+  render_page('duplicates', array(
+    'title' => 'Duplicates',
+    'content' => $content,
+  ));
+
 } else {
 
   render_view('duplicates', array(
+    'title' => 'Duplicates',
     'games' => $games,
     'count' => $count,
   ));
 
 }
-
-// back
-echo '<div><a href="index.php?system='.$system.'">Back</a></div>';
-
-// done
-close_page();

@@ -72,13 +72,3 @@ function render_view($view, $data) {
   global $system;
   require('views/' . $view . '.php');
 }
-
-function open_page($system) {
-  render_view('header', array(
-    'title' => 'ROMS' . ($system != NULL ? ' - '.strtoupper($system) : '')
-  ));
-}
-
-function close_page() {
-  render_view('footer', array());
-}

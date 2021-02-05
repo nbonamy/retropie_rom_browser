@@ -30,15 +30,7 @@ usort($favorites, function($a, $b) {
 
 
 // output
-open_page('Favorites');
-foreach ($favorites as $game) {
-  render_view('game', array(
-    'system' => $game['system'],
-    'title' => $game['title'],
-    'filename' => $game['filename'],
-    'favorite' => $game['favorite'],
-    'image' => $game['image'],
-    'cover' => $game['cover']
-  ));
-}
-close_page();
+render_view('favorites', array(
+  'title' => 'Favorites',
+  'games' => $favorites,
+));
