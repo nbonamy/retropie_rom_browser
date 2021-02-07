@@ -5,9 +5,18 @@ define('BASE_ROM', '/home/pi/RetroPie/roms/');
 define('BASE_IMAGE', '/home/pi/.emulationstation/downloaded_images/');
 define('BASE_GAMELIST', '/home/pi/.emulationstation/gamelists/');
 
-// ignored stuff
+// valid/ignored stuff: from https://retropie.org.uk/about/systems/
 define('IGNORED_FILENAMES', array('tos.img'));
-define('IGNORED_EXTS', array('sh', 'txt', 'srm', 'bin', 'jpg', 'png', 'conf', 'xml', 'sqlite', 'htm', 'html', 'jsf'));
+define('ROM_EXTS', array(
+  '32x', 'a26', 'a52', 'a78', 'adf', 'asc', 'atr', 'bas', 'bat', 'bin', 'bz2',
+  'cas', 'cbn', 'ccc', 'cdi', 'col', 'com', 'cpc', 'crt', 'cso', 'ctg', 'ctr', 'cue',
+  'd64', 'dcm', 'dmk', 'dsk', 'dump', 'exe', 'fig', 'g64', 'gam', 'gb', 'gba', 'gbc', 'gdi', 'gg', 'gz',
+  'ima', 'img', 'int', 'ipf', 'iso', 'j64', 'jag', 'jvc', 'lnx', 'm3u', 'md', 'mdf', 'mgd', 'mgt', 'mx1', 'mx2',
+  'n64', 'nds', 'nes', 'ngc', 'ngp', 'os9', 'pbp', 'pce', 'raw', 'rom',
+  'sad', 'sbt', 'scl', 'sfc', 'sg', /*'sh', */'smc', 'smd', 'sms', 'sna', 'st', 'stx', 'swc', 'szx', 't64',
+  'tap', 'toc', 'trd', 'tzx', 'udi', 'v64', 'vb', 'vdk', 'vec', 'wav', 'ws', 'wsc',
+  'x64', 'xex', 'xfd', 'z', 'z2', 'z64', 'z80', 'zip', 'znx', 
+));
 
 // geographies
 define('GEOGRAPHIES', array(

@@ -25,7 +25,7 @@ function is_valid_rom($filename) {
 
   // check ext
   $extension = $path_parts['extension'];
-  if (starts_with($extension, 'state') || in_array($extension, IGNORED_EXTS)) {
+  if (!in_array($extension, ROM_EXTS)) {
     return FALSE;
   }
 
@@ -66,8 +66,8 @@ function list_games($system) {
   // favorites
   $metadata = read_gamelist($system);
 
-  // get games
-  $games = array();
+  // list all files
+  $files = array();
   $dir = new DirectoryIterator(BASE_ROM.$system);
   foreach ($dir as $fileinfo) {
     if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
@@ -78,41 +78,64 @@ function list_games($system) {
         continue;
       }
 
-      // split
-      $path_parts = pathinfo($fileinfo->getPathname());
-
-      // find cover
-      if (isset($metadata[$filename]['image'])) {
-        $cover = basename($metadata[$filename]['image']);
-      } else {
-        // default to jpg
-        $cover = $path_parts['filename'].'.jpg';
+      // special case: if .cue remve previous .bin
+      $path_parts = pathinfo($filename);
+      if ($path_parts['extension'] == 'cue') {
+        if (count($files) > 0) {
+          $previous_parts = pathinfo(end($files));
+          if ($path_parts['filename'] == $previous_parts['filename'] && $previous_parts['extension'] == 'bin') {
+            array_pop($files);
+          }
+        }
       }
+      
+      // add
+      $files[] = $fileinfo->getPathname();
 
-      // fallback
-      $image = "covers/$system/$cover";
-      if ($cover === NULL || !file_exists($image)) {
-        //$image = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/CD_icon_test.svg/1920px-CD_icon_test.svg.png";
-        $image = "https://cdn4.iconfinder.com/data/icons/disk-drives-1/512/Switch_Cartridge-01-512.png";
-      }
-
-      // done
-      $gamename = $filename;
-      $favorite = FALSE;
-      if (isset($metadata[$filename])) {
-        $gamename = $metadata[$filename]['name'];
-        $favorite = $metadata[$filename]['favorite'];
-      }
-
-      $games[] = array(
-        'system' => $system,
-        'filename' => $filename,
-        'title' => $gamename,
-        'favorite' => $favorite,
-        'cover' => $cover,
-        'image' => $image
-      );
     }
+  }
+
+  // now get games
+  $games = array();
+  foreach ($files as $file) {
+
+    // split
+    $filename = basename($file);
+    $path_parts = pathinfo($filename);
+
+    // find cover
+    if (isset($metadata[$filename]['image'])) {
+      $cover = basename($metadata[$filename]['image']);
+    } else {
+      // default to jpg
+      $cover = $path_parts['filename'].'.jpg';
+    }
+
+    // fallback
+    $image = "covers/$system/$cover";
+    if ($cover === NULL || !file_exists($image)) {
+      //$image = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/CD_icon_test.svg/1920px-CD_icon_test.svg.png";
+      $image = "https://cdn4.iconfinder.com/data/icons/disk-drives-1/512/Switch_Cartridge-01-512.png";
+    }
+
+    // get metadata
+    $favorite = FALSE;
+    $gamename = $path_parts['filename'];
+    if (isset($metadata[$filename])) {
+      $gamename = $metadata[$filename]['name'];
+      $favorite = $metadata[$filename]['favorite'];
+    }
+
+    // done
+    $games[] = array(
+      'system' => $system,
+      'filename' => $filename,
+      'title' => $gamename,
+      'favorite' => $favorite,
+      'cover' => $cover,
+      'image' => $image
+    );
+
   }
 
   // sort
