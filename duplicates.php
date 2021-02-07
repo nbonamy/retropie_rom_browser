@@ -20,7 +20,7 @@ foreach ($games as $title => &$roms) {
 // output
 if ($count == 0) {
 
-  render_page('duplicates', array(
+  render_view('duplicates', array(
     'title' => 'Duplicates',
     'content' => '<div>No duplicates found</div>'
   ));
@@ -52,7 +52,7 @@ if ($count == 0) {
   }
 
   // output
-  render_page('duplicates', array(
+  render_view('duplicates', array(
     'title' => 'Duplicates',
     'content' => $content,
   ));
